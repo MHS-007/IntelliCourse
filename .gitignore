@@ -1,0 +1,32 @@
+# ------------------------
+# IntelliCourse Git Ignore
+# ------------------------
+
+# Python cache & compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+
+# Environment variables (API Keys)
+.env
+
+# Backup folder (not needed for submission)
+backup/
+
+# Jupyter notebooks checkpoints (if ever used)
+.ipynb_checkpoints/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE settings
+.vscode/
+.idea/
+
+# Logs
+*.log
