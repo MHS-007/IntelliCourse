@@ -101,6 +101,25 @@ json={"query": "What are the prerequisites for Software Engineering?"}
 
 print(response.json())
 ```
+---
+
+## 🌐 Frontend
+
+A minimal web-based interface is included (`index.html`) that allows you to:
+
+- Enter a query (course-related or general).
+- View AI-generated answers with **source tool** and **retrieved context**.
+- Maintain query history with the option to clear it.
+
+### Running the Frontend
+
+1. Make sure the FastAPI backend is running:
+   ```bash
+   uvicorn app.api:api_app --reload
+   ```
+2. Open `index.html` in your browser.
+
+⚠️ Note: The frontend fetches responses from the FastAPI `/chat` endpoint. If the server is not running, the page won’t work.
 
 ---
 

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IntelliCourse</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Animate "Thinking..." dots */
+    .dots::after {
+      content: '';
+      animation: dots 1.5s steps(3, end) infinite;
+    }
+    @keyframes dots {
+      0% { content: ''; }
+      33% { content: '.'; }
+      66% { content: '..'; }
+      100% { content: '...'; }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+  <div class="w-full max-w-3xl bg-white rounded-xl shadow-lg p-6 flex flex-col">
+    <h1 class="text-2xl font-bold mb-4 text-center">🎓 IntelliCourse Chat</h1>
+
+    <!-- Input -->
+    <div class="flex gap-2 mb-4">
+      <input id="queryInput" 
+             type="text" 
+             placeholder="Ask about courses or general knowledge..."
+             class="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300">
+      <button onclick="sendQuery()" 
+              class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+        Ask
+      </button>
+      <button onclick="clearHistory()" 
+              class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
+        Clear
+      </button>
+    </div>
+
+    <!-- Message for empty input -->
+    <p id="warningMsg" class="text-red-500 text-sm hidden mb-3">⚠️ Please enter a query before asking.</p>
+
+    <!-- Loader -->
+    <p id="loadingMsg" class="text-gray-500 text-sm hidden mb-3 dots">🤔 Thinking</p>
+
+    <!-- History -->
+    <div id="history" class="space-y-4 flex-1 overflow-y-auto"></div>
+  </div>
+
+  <script>
+    const API_URL = "http://127.0.0.1:8000/chat";
+
+    async function sendQuery() {
+      const queryInput = document.getElementById("queryInput");
+      const query = queryInput.value.trim();
+      const warningMsg = document.getElementById("warningMsg");
+      const loadingMsg = document.getElementById("loadingMsg");
+      const historyDiv = document.getElementById("history");
+
+      // Warn if empty query
+      if (!query) {
+        warningMsg.classList.remove("hidden");
+        return;
+      } else {
+        warningMsg.classList.add("hidden");
+      }
+
+      // Reset input
+      queryInput.value = "";
+
+      // Show loader
+      loadingMsg.classList.remove("hidden");
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Something went wrong");
+        }
+
+        // === User bubble (left) ===
+        const userBubble = document.createElement("div");
+        userBubble.className = "flex justify-start";
+        userBubble.innerHTML = `
+          <div class="bg-blue-100 text-blue-900 px-4 py-2 rounded-lg max-w-lg shadow">
+            <span class="font-semibold">You:</span> ${query}
+          </div>
+        `;
+        historyDiv.appendChild(userBubble);
+
+        // === AI bubble (right) ===
+        const aiBubble = document.createElement("div");
+        aiBubble.className = "flex justify-end";
+        aiBubble.innerHTML = `
+          <div class="bg-green-100 text-green-900 px-4 py-2 rounded-lg max-w-lg shadow">
+            <p><span class="font-semibold">Answer:</span> ${data.answer}</p>
+            <p><span class="font-semibold">Source Tool:</span> ${data.source_tool}</p>
+            <details class="mt-2">
+              <summary class="cursor-pointer text-blue-600">View Context</summary>
+              <pre class="whitespace-pre-wrap text-sm mt-1">
+${(data.retrieved_context || [])
+  .map((c, i) => `--- Chunk ${i + 1} ---\n${c}`)
+  .join("\n\n")}
+              </pre>
+            </details>
+          </div>
+        `;
+        historyDiv.appendChild(aiBubble);
+
+        // Auto-scroll to bottom
+        historyDiv.scrollTop = historyDiv.scrollHeight;
+
+      } catch (error) {
+        alert("❌ Error: " + error.message);
+      } finally {
+        // Hide loader after response
+        loadingMsg.classList.add("hidden");
+      }
+    }
+
+    // Clear history
+    function clearHistory() {
+      document.getElementById("history").innerHTML = "";
+    }
+  </script>
+
+</body>
+</html>

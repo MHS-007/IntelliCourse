@@ -6,9 +6,7 @@ URL = "http://127.0.0.1:8000/chat"
 queries = [
     "What are the prerequisites for Software Engineering?",
     "What is the job market like for data scientists?",
-    "How many departments does the university have?",
     "What are the prerequisites for Introduction To Programming?",
-    "What is the schedule for the course Calculus I?",
     "Who is the instructor for the course Abnormal Psychology?"
 ]
 
