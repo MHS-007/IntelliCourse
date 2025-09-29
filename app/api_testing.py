@@ -1,12 +1,6 @@
 import requests
-from dotenv import load_dotenv
-import os
 
-load_dotenv()
-
-
-BASE_URL = os.getenv("BACKEND_URL")
-URL = f"{BASE_URL}/chat"
+URL = "http://127.0.0.1:8000/chat"
 
 # Multiple queries for testing
 queries = [

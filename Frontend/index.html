@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🎓 IntelliCourse</title>
-  <script src="config.js"></script>
+  <title>IntelliCourse</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     /* Animate "Thinking..." dots */
@@ -52,6 +51,8 @@
   </div>
 
   <script>
+    const API_URL = "http://127.0.0.1:8000/chat";
+
     async function sendQuery() {
       const queryInput = document.getElementById("queryInput");
       const query = queryInput.value.trim();
